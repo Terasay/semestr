@@ -2,15 +2,28 @@ const cursorDot = document.getElementById('cursorDot');
 const cursorOutline = document.getElementById('cursorOutline');
 
 if (window.innerWidth > 768) {
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let outlineX = mouseX;
+    let outlineY = mouseY;
+    const outlineSpeed = 0.2; // Чем больше, тем быстрее догоняет
+
     document.addEventListener('mousemove', (e) => {
-        cursorDot.style.left = e.clientX + 'px';
-        cursorDot.style.top = e.clientY + 'px';
-        
-        setTimeout(() => {
-            cursorOutline.style.left = e.clientX + 'px';
-            cursorOutline.style.top = e.clientY + 'px';
-        }, 50);
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorDot.style.left = mouseX + 'px';
+        cursorDot.style.top = mouseY + 'px';
     });
+
+    function animateOutline() {
+        // Плавно догоняет точку
+        outlineX += (mouseX - outlineX) * outlineSpeed;
+        outlineY += (mouseY - outlineY) * outlineSpeed;
+        cursorOutline.style.left = outlineX + 'px';
+        cursorOutline.style.top = outlineY + 'px';
+        requestAnimationFrame(animateOutline);
+    }
+    animateOutline();
 
     const clickables = document.querySelectorAll('a, button, .project-card, .skill-card');
     clickables.forEach(el => {
@@ -275,7 +288,7 @@ const testimonials = [
     {
         name: 'Bureevar',
         role: 'CEO UFA HotDogs',
-        text: 'Превосходный результат! Дизайн сайта полностью соответствует нашему бренду. Очень довольны сотрудничеством.',
+        text: 'В нелом все неплохо, не считая некоторые огрехи с [придумайте сами]',
         avatar: 'B'
     }
 ];
