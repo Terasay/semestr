@@ -334,6 +334,17 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transform = 'translateY(0)';
         }, index * 100);
     });
+
+    // Анимация вращения иконки навыка при наведении
+    const skillIcons = document.querySelectorAll('.skill-icon');
+    skillIcons.forEach(icon => {
+        icon.addEventListener('mouseenter', () => {
+            icon.classList.add('rotate');
+            setTimeout(() => {
+                icon.classList.remove('rotate');
+            }, 500);
+        });
+    });
 });
 
 document.addEventListener('mousemove', (e) => {

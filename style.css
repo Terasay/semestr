@@ -473,6 +473,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.skill-icon.rotate {
+    animation: rotateIcon 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+@keyframes rotateIcon {
+    0% {
+        transform: rotate(0deg);
+    }
+    60% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .skill-card h3 {
