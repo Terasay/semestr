@@ -311,10 +311,11 @@ body {
 }
 
 .typing-text {
-    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
     min-height: 1.2em;
     display: inline-block;
 }
@@ -990,10 +991,16 @@ body {
     display: flex;
     overflow: hidden;
     gap: 30px;
+    transition: transform 0.6s ease;
+    width: 100%;
+}
+
+.testimonials-wrapper > * {
+    flex: 0 0 100%;
+    box-sizing: border-box;
 }
 
 .testimonial-card {
-    min-width: 100%;
     padding: 50px;
     background: var(--light);
     border-radius: 20px;
@@ -1561,6 +1568,10 @@ body {
     background: linear-gradient(135deg, #ffd89b, #19547b, #ffd89b);
     background-size: 200% 200%;
     animation: gradient-animation 3s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
 }
 
 .loading {

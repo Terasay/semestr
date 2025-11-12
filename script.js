@@ -261,22 +261,22 @@ function animateSkillBars() {
 
 const testimonials = [
     {
-        name: 'Анна Иванова',
-        role: 'CEO Tech Solutions',
-        text: 'Отличная работа! Сайт получился современным и функциональным. Все было сделано в срок и с высоким качеством.',
-        avatar: 'А'
+        name: 'Trude',
+        role: 'CEO "Боже мой"',
+        text: 'Отличная работа! Раньше у меня была депрессия, а сейчас, увидев эту работу - я решил для себя: пора спрыгнуть с крыши! Благодарю разработчика за такой функционал!',
+        avatar: 'T'
     },
     {
-        name: 'Дмитрий Петров',
-        role: 'Владелец бизнеса',
-        text: 'Профессиональный подход к работе. Рекомендую как надежного разработчика, который понимает потребности клиента.',
+        name: 'Данил Косцов',
+        role: 'Студент ВТК',
+        text: 'Классный сайт ребята только там и закупаюсь ставлю 5 звезд этому произведению исскуству или даже я бы назвал это 8 чудом света',
         avatar: 'Д'
     },
     {
-        name: 'Елена Смирнова',
-        role: 'Marketing Manager',
+        name: 'Bureevar',
+        role: 'CEO UFA HotDogs',
         text: 'Превосходный результат! Дизайн сайта полностью соответствует нашему бренду. Очень довольны сотрудничеством.',
-        avatar: 'Е'
+        avatar: 'B'
     }
 ];
 
@@ -306,13 +306,23 @@ function renderTestimonials() {
         dot.addEventListener('click', () => goToSlide(index));
         sliderDots.appendChild(dot);
     });
-    
+
+    const cards = testimonialsWrapper.querySelectorAll('.testimonial-card');
+    testimonialsWrapper.style.width = `${cards.length * 100}%`;
+    cards.forEach(card => {
+        card.style.flex = `0 0 ${100 / cards.length}%`;
+    });
+
     updateSlider();
 }
 
 function updateSlider() {
-    testimonialsWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-    
+    const cards = document.querySelectorAll('.testimonial-card');
+    if (cards.length > 0) {
+        const slideWidth = cards[0].offsetWidth;
+        testimonialsWrapper.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+    }
+
     const dots = sliderDots.querySelectorAll('.dot');
     dots.forEach((dot, index) => {
         dot.classList.toggle('active', index === currentSlide);
