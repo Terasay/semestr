@@ -1,3 +1,47 @@
+const cursorDot = document.getElementById('cursorDot');
+const cursorOutline = document.getElementById('cursorOutline');
+
+if (window.innerWidth > 768) {
+    document.addEventListener('mousemove', (e) => {
+        cursorDot.style.left = e.clientX + 'px';
+        cursorDot.style.top = e.clientY + 'px';
+        
+        setTimeout(() => {
+            cursorOutline.style.left = e.clientX + 'px';
+            cursorOutline.style.top = e.clientY + 'px';
+        }, 50);
+    });
+
+    const clickables = document.querySelectorAll('a, button, .project-card, .skill-card');
+    clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursorDot.style.transform = 'scale(2)';
+            cursorOutline.style.transform = 'scale(1.5)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursorDot.style.transform = 'scale(1)';
+            cursorOutline.style.transform = 'scale(1)';
+        });
+    });
+}
+
+function createParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 30;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particlesContainer.appendChild(particle);
+    }
+}
+
+createParticles();
+
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -34,11 +78,16 @@ function setActiveLink() {
 
 function parallaxEffect() {
     const scrolled = window.pageYOffset;
-    const parallaxBg = document.querySelector('.parallax-bg');
     
+    const parallaxBg = document.querySelector('.parallax-bg');
     if (parallaxBg) {
-        parallaxBg.style.setProperty('--scroll-offset', `${scrolled * 0.5}px`);
+        parallaxBg.style.transform = `translateY(${scrolled * 0.5}px)`;
     }
+
+    document.querySelectorAll('.shape').forEach(shape => {
+        const speed = parseFloat(shape.dataset.speed);
+        shape.style.transform = `translateY(${scrolled * speed}px)`;
+    });
 
     if (scrolled > 50) {
         header.classList.add('scrolled');
@@ -46,6 +95,39 @@ function parallaxEffect() {
         header.classList.remove('scrolled');
     }
 }
+
+const typingText = document.getElementById('typingText');
+const texts = ['Веб-разработчик', 'Frontend разработчик', 'UI/UX дизайнер', 'Фрилансер'];
+let textIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+
+function typeText() {
+    const currentText = texts[textIndex];
+    
+    if (isDeleting) {
+        typingText.textContent = currentText.substring(0, charIndex - 1);
+        charIndex--;
+    } else {
+        typingText.textContent = currentText.substring(0, charIndex + 1);
+        charIndex++;
+    }
+
+    let typeSpeed = isDeleting ? 50 : 100;
+
+    if (!isDeleting && charIndex === currentText.length) {
+        typeSpeed = 2000;
+        isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        textIndex = (textIndex + 1) % texts.length;
+        typeSpeed = 500;
+    }
+
+    setTimeout(typeText, typeSpeed);
+}
+
+setTimeout(typeText, 1000);
 
 const projects = [
     {
@@ -108,7 +190,7 @@ function renderProjects(filter = 'all') {
         card.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s both`;
         card.innerHTML = `
             <div class="project-image">
-                <img src="${project.image}" alt="${project.title}" width="160" height="160" style="object-fit:cover;border-radius:12px;">
+                <img src="${project.image}" alt="${project.title}" loading="lazy">
             </div>
             <div class="project-content">
                 <span class="project-category">${getCategoryName(project.category)}</span>
@@ -143,6 +225,8 @@ function animateNumbers() {
     const statNumbers = document.querySelectorAll('.stat-number');
     
     statNumbers.forEach(stat => {
+        if (stat.classList.contains('counted')) return;
+        
         const target = parseInt(stat.getAttribute('data-target'));
         const duration = 2000;
         const step = target / (duration / 16);
@@ -153,6 +237,7 @@ function animateNumbers() {
             if (current >= target) {
                 stat.textContent = target + '+';
                 clearInterval(counter);
+                stat.classList.add('counted');
             } else {
                 stat.textContent = Math.floor(current);
             }
@@ -164,10 +249,95 @@ function animateSkillBars() {
     const skillBars = document.querySelectorAll('.skill-progress');
     
     skillBars.forEach(bar => {
+        if (bar.classList.contains('animated')) return;
+        
         const progress = bar.getAttribute('data-progress');
-        bar.style.width = progress + '%';
+        setTimeout(() => {
+            bar.style.width = progress + '%';
+            bar.classList.add('animated');
+        }, 100);
     });
 }
+
+const testimonials = [
+    {
+        name: 'Анна Иванова',
+        role: 'CEO Tech Solutions',
+        text: 'Отличная работа! Сайт получился современным и функциональным. Все было сделано в срок и с высоким качеством.',
+        avatar: 'А'
+    },
+    {
+        name: 'Дмитрий Петров',
+        role: 'Владелец бизнеса',
+        text: 'Профессиональный подход к работе. Рекомендую как надежного разработчика, который понимает потребности клиента.',
+        avatar: 'Д'
+    },
+    {
+        name: 'Елена Смирнова',
+        role: 'Marketing Manager',
+        text: 'Превосходный результат! Дизайн сайта полностью соответствует нашему бренду. Очень довольны сотрудничеством.',
+        avatar: 'Е'
+    }
+];
+
+const testimonialsWrapper = document.getElementById('testimonialsWrapper');
+const sliderDots = document.getElementById('sliderDots');
+const sliderPrev = document.getElementById('sliderPrev');
+const sliderNext = document.getElementById('sliderNext');
+let currentSlide = 0;
+
+function renderTestimonials() {
+    testimonialsWrapper.innerHTML = '';
+    sliderDots.innerHTML = '';
+    
+    testimonials.forEach((testimonial, index) => {
+        const card = document.createElement('div');
+        card.className = 'testimonial-card';
+        card.innerHTML = `
+            <div class="testimonial-avatar">${testimonial.avatar}</div>
+            <p class="testimonial-text">"${testimonial.text}"</p>
+            <h4 class="testimonial-author">${testimonial.name}</h4>
+            <p class="testimonial-role">${testimonial.role}</p>
+        `;
+        testimonialsWrapper.appendChild(card);
+        
+        const dot = document.createElement('div');
+        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => goToSlide(index));
+        sliderDots.appendChild(dot);
+    });
+    
+    updateSlider();
+}
+
+function updateSlider() {
+    testimonialsWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    const dots = sliderDots.querySelectorAll('.dot');
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+}
+
+function goToSlide(index) {
+    currentSlide = index;
+    updateSlider();
+}
+
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % testimonials.length;
+    updateSlider();
+}
+
+function prevSlide() {
+    currentSlide = (currentSlide - 1 + testimonials.length) % testimonials.length;
+    updateSlider();
+}
+
+sliderNext.addEventListener('click', nextSlide);
+sliderPrev.addEventListener('click', prevSlide);
+
+setInterval(nextSlide, 5000);
 
 const contactForm = document.getElementById('contactForm');
 const nameInput = document.getElementById('name');
@@ -182,14 +352,18 @@ function validateEmail(email) {
 
 function showError(input, message) {
     const errorSpan = document.getElementById(input.id + 'Error');
-    errorSpan.textContent = message;
-    input.style.borderColor = '#e53e3e';
+    if (errorSpan) {
+        errorSpan.textContent = message;
+        input.style.borderColor = '#e53e3e';
+    }
 }
 
 function clearError(input) {
     const errorSpan = document.getElementById(input.id + 'Error');
-    errorSpan.textContent = '';
-    input.style.borderColor = '#e2e8f0';
+    if (errorSpan) {
+        errorSpan.textContent = '';
+        input.style.borderColor = '#e2e8f0';
+    }
 }
 
 nameInput.addEventListener('input', () => {
@@ -274,14 +448,18 @@ heroBtn.addEventListener('click', () => {
 });
 
 const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -100px 0px'
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            if (entry.target.classList.contains('reveal-left') || 
+                entry.target.classList.contains('reveal-right') || 
+                entry.target.classList.contains('reveal-bottom')) {
+                entry.target.classList.add('active');
+            }
             
             if (entry.target.classList.contains('about-stats')) {
                 animateNumbers();
@@ -293,11 +471,13 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-const sections = document.querySelectorAll('.section');
+document.querySelectorAll('.reveal-left, .reveal-right, .reveal-bottom').forEach(el => {
+    observer.observe(el);
+});
+
 const aboutStats = document.querySelector('.about-stats');
 const skillsGrid = document.querySelector('.skills-grid');
 
-sections.forEach(section => observer.observe(section));
 if (aboutStats) observer.observe(aboutStats);
 if (skillsGrid) observer.observe(skillsGrid);
 
@@ -315,48 +495,22 @@ window.addEventListener('scroll', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    renderProjects();
-    
-    parallaxEffect();
-    setActiveLink();
-    toggleScrollTopBtn();
-    
-    const cards = document.querySelectorAll('.skill-card, .contact-item, .project-card');
-    cards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-            card.style.transition = 'all 0.6s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
-    });
-
-    // Анимация вращения иконки навыка при наведении
-    const skillIcons = document.querySelectorAll('.skill-icon');
-    skillIcons.forEach(icon => {
-        icon.addEventListener('mouseenter', () => {
-            icon.classList.add('rotate');
-            setTimeout(() => {
-                icon.classList.remove('rotate');
-            }, 500);
-        });
-    });
-});
-
 document.addEventListener('mousemove', (e) => {
-    const cards = document.querySelectorAll('.project-card, .skill-card');
+    const cards = document.querySelectorAll('.project-card, .service-card, .skill-card');
     
     cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        card.style.setProperty('--mouse-x', x + 'px');
-        card.style.setProperty('--mouse-y', y + 'px');
+        if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+            const xRotation = ((y - rect.height / 2) / rect.height) * -10;
+            const yRotation = ((x - rect.width / 2) / rect.width) * 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-5px)`;
+        } else {
+            card.style.transform = '';
+        }
     });
 });
 
@@ -391,3 +545,44 @@ function debounce(func, wait) {
 window.addEventListener('resize', debounce(() => {
     setActiveLink();
 }, 250));
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderProjects();
+    renderTestimonials();
+    
+    parallaxEffect();
+    setActiveLink();
+    toggleScrollTopBtn();
+    
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 100);
+});
+
+document.addEventListener('click', (e) => {
+    const ripple = document.createElement('div');
+    ripple.style.position = 'fixed';
+    ripple.style.width = '20px';
+    ripple.style.height = '20px';
+    ripple.style.borderRadius = '50%';
+    ripple.style.background = 'radial-gradient(circle, rgba(102, 126, 234, 0.3), transparent)';
+    ripple.style.left = e.clientX - 10 + 'px';
+    ripple.style.top = e.clientY - 10 + 'px';
+    ripple.style.pointerEvents = 'none';
+    ripple.style.animation = 'ripple-effect 0.6s ease-out';
+    
+    document.body.appendChild(ripple);
+    
+    setTimeout(() => ripple.remove(), 600);
+});
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple-effect {
+        to {
+            transform: scale(10);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
