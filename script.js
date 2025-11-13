@@ -6,7 +6,7 @@ if (window.innerWidth > 768) {
     let mouseY = window.innerHeight / 2;
     let outlineX = mouseX;
     let outlineY = mouseY;
-    const outlineSpeed = 0.2; // Чем больше, тем быстрее догоняет
+    const outlineSpeed = 0.2;
 
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
@@ -16,7 +16,6 @@ if (window.innerWidth > 768) {
     });
 
     function animateOutline() {
-        // Плавно догоняет точку
         outlineX += (mouseX - outlineX) * outlineSpeed;
         outlineY += (mouseY - outlineY) * outlineSpeed;
         cursorOutline.style.left = outlineX + 'px';
