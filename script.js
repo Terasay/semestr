@@ -301,7 +301,7 @@ let currentSlide = 0;
 function renderTestimonials() {
     testimonialsWrapper.innerHTML = '';
     sliderDots.innerHTML = '';
-    
+
     testimonials.forEach((testimonial, index) => {
         const card = document.createElement('div');
         card.className = 'testimonial-card';
@@ -312,7 +312,7 @@ function renderTestimonials() {
             <p class="testimonial-role">${testimonial.role}</p>
         `;
         testimonialsWrapper.appendChild(card);
-        
+
         const dot = document.createElement('div');
         dot.className = `dot ${index === 0 ? 'active' : ''}`;
         dot.addEventListener('click', () => goToSlide(index));
@@ -320,9 +320,10 @@ function renderTestimonials() {
     });
 
     const cards = testimonialsWrapper.querySelectorAll('.testimonial-card');
+    const isMobile = window.innerWidth < 768;
     testimonialsWrapper.style.width = `${cards.length * 100}%`;
     cards.forEach(card => {
-        card.style.flex = `0 0 ${100 / cards.length}%`;
+        card.style.flex = `0 0 ${isMobile ? 100 : 33.333}%`;
     });
 
     updateSlider();
